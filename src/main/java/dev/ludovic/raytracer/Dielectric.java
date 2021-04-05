@@ -20,7 +20,7 @@ public class Dielectric implements Material {
 
         boolean cannot_refract = refraction_ratio * sin_theta > 1.0;
         Vec3 direction;
-        if (cannot_refract || reflectance(cos_theta, refraction_ratio) > ThreadLocalRandom.current().nextDouble(0.0, 1.0))
+        if (cannot_refract || reflectance(cos_theta, refraction_ratio) > ThreadLocalRandom.current().nextDouble())
             direction = unit_direction.reflect(rec.normal());
         else
             direction = unit_direction.refract(rec.normal(), refraction_ratio);

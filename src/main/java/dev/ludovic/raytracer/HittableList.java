@@ -3,7 +3,7 @@ package dev.ludovic.raytracer;
 
 import java.util.ArrayList;
 
-public class HittableList implements Hittable {
+public final class HittableList implements Hittable {
 
     private final ArrayList<Hittable> objects = new ArrayList<Hittable>();
 

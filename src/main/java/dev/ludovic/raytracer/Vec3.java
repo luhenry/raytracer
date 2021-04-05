@@ -2,6 +2,7 @@
 package dev.ludovic.raytracer;
 
 import java.io.PrintWriter;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Vec3 {
@@ -133,19 +134,33 @@ public class Vec3 {
         return r_out_perp.add(r_out_parallel);
     }
 
-    public static Vec3 random() {
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
-        return new Vec3(rand.nextDouble(0.0, 1.0), rand.nextDouble(0.0, 1.0), rand.nextDouble(0.0, 1.0));
+    public static Vec3 random(Random rand, double min, double max) {
+        return new Vec3(min + rand.nextDouble() * (max - min), min + rand.nextDouble() * (max - min), min + rand.nextDouble() * (max - min));
     }
 
     public static Vec3 random(double min, double max) {
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
-        return new Vec3(rand.nextDouble(min, max), rand.nextDouble(min, max), rand.nextDouble(min, max));
+        return random(ThreadLocalRandom.current(), min, max);
+    }
+
+    public static Vec3 random(Random rand) {
+        return random(rand, 0.0, 1.0);
+    }
+
+    public static Vec3 random() {
+        return random(0.0, 1.0);
     }
 
     public static Vec3 randomInUnitSphere() {
         while (true) {
             Vec3 p = random(-1, 1);
+            if (p.lengthSquared() >= 1) continue;
+            return p;
+        }
+    }
+
+    public static Vec3 randomInUnitDisk() {
+        while (true) {
+            Vec3 p = random(-1, 1).z(0);
             if (p.lengthSquared() >= 1) continue;
             return p;
         }
