@@ -3,7 +3,10 @@ package dev.ludovic.raytracer;
 
 import java.io.PrintWriter;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -19,7 +22,7 @@ public class Scene {
         this.world = world;
     }
 
-    public Color[] render(final int image_width, final int image_height) throws InterruptedException {
+    public Color[] render(final int image_width, final int image_height) throws InterruptedException, ExecutionException {
         // Image
         final double aspect_ratio = ((double)image_width) / image_height;
         final int samples_per_pixel = 500;
@@ -38,19 +41,32 @@ public class Scene {
         logger.log(Level.INFO, "Render");
 
         final Color[] image = new Color[image_width * image_height];
-        for (int j = image_height-1; j >= 0; --j) {
-            long start = System.currentTimeMillis();
-            for (int i = 0; i < image_width; ++i) {
-                Vec3 pixel_color = new Vec3(0, 0, 0);
-                for (int s = 0; s < samples_per_pixel; ++s) {
-                    double u = ((double)i + ThreadLocalRandom.current().nextDouble()) / (image_width-1);
-                    double v = ((double)j + ThreadLocalRandom.current().nextDouble()) / (image_height-1);
-                    pixel_color = pixel_color.add(ray_color(cam.ray(u, v), world, max_depth));
+
+        final ForkJoinPool pool = new ForkJoinPool();
+        final ForkJoinTask[] tasks = new ForkJoinTask[image_height];
+        for (int jo = image_height-1; jo >= 0; --jo) {
+            final int j = jo;
+            tasks[j] = pool.submit(new Callable() {
+                public Long call() {
+                    long start = System.currentTimeMillis();
+                    for (int i = 0; i < image_width; ++i) {
+                        Vec3 pixel_color = new Vec3(0, 0, 0);
+                        for (int s = 0; s < samples_per_pixel; ++s) {
+                            double u = ((double)i + ThreadLocalRandom.current().nextDouble()) / (image_width-1);
+                            double v = ((double)j + ThreadLocalRandom.current().nextDouble()) / (image_height-1);
+                            pixel_color = pixel_color.add(ray_color(cam.ray(u, v), world, max_depth));
+                        }
+                        image[j * image_width + i] = new Color(pixel_color.div(samples_per_pixel).sqrt());
+                    }
+                    long end = System.currentTimeMillis();
+                    return end - start;
                 }
-                image[j * image_width + i] = new Color(pixel_color);
-            }
-            long end = System.currentTimeMillis();
-            logger.log(Level.INFO, String.format("Remaining: %d (%dms)", j - 1, end - start));
+            });
+        }
+
+        for (int j = image_height - 1; j >= 0; --j) {
+            Long duration = (Long)tasks[j].get();
+            logger.log(Level.INFO, String.format("Remaining: %d (%dms)", j, duration));
         }
 
         return image;
