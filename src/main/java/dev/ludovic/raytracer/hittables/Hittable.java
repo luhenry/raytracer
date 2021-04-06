@@ -1,5 +1,7 @@
 
-package dev.ludovic.raytracer;
+package dev.ludovic.raytracer.hittables;
+
+import dev.ludovic.raytracer.Ray;
 
 public interface Hittable {
 

@@ -1,7 +1,12 @@
 
-package dev.ludovic.raytracer;
+package dev.ludovic.raytracer.materials;
 
 import java.util.concurrent.ThreadLocalRandom;
+
+import dev.ludovic.raytracer.Color;
+import dev.ludovic.raytracer.Ray;
+import dev.ludovic.raytracer.Vec3;
+import dev.ludovic.raytracer.hittables.HitRecord;
 
 public class Dielectric implements Material {
 

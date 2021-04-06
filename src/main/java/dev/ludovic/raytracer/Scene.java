@@ -12,6 +12,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import dev.ludovic.raytracer.hittables.HitRecord;
+import dev.ludovic.raytracer.hittables.HittableList;
+import dev.ludovic.raytracer.hittables.Sphere;
+import dev.ludovic.raytracer.materials.Dielectric;
+import dev.ludovic.raytracer.materials.Lambertian;
+import dev.ludovic.raytracer.materials.Material;
+import dev.ludovic.raytracer.materials.Metal;
+
 public class Scene {
 
     private static final Logger logger = Logger.getLogger(Scene.class.getName());
@@ -98,7 +106,7 @@ public class Scene {
 
         HittableList world = new HittableList();
 
-        Material ground_material = new Lambertian(new Color(0.5, 0.5, 0.5));
+        Material ground_material = new Metal(new Color(0.7, 0.6, 0.5), 0.0);
         world.add(new Sphere(new Point3(0,-1000,0), 1000, ground_material));
 
         for (int a = -11; a < 11; a++) {

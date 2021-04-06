@@ -1,7 +1,9 @@
 
-package dev.ludovic.raytracer;
+package dev.ludovic.raytracer.hittables;
 
 import java.util.ArrayList;
+
+import dev.ludovic.raytracer.Ray;
 
 public final class HittableList implements Hittable {
 

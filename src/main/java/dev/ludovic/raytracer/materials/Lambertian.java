@@ -1,5 +1,10 @@
 
-package dev.ludovic.raytracer;
+package dev.ludovic.raytracer.materials;
+
+import dev.ludovic.raytracer.Color;
+import dev.ludovic.raytracer.Ray;
+import dev.ludovic.raytracer.Vec3;
+import dev.ludovic.raytracer.hittables.HitRecord;
 
 public class Lambertian implements Material {
 

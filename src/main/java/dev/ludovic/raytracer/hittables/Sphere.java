@@ -1,5 +1,10 @@
 
-package dev.ludovic.raytracer;
+package dev.ludovic.raytracer.hittables;
+
+import dev.ludovic.raytracer.Point3;
+import dev.ludovic.raytracer.Ray;
+import dev.ludovic.raytracer.Vec3;
+import dev.ludovic.raytracer.materials.Material;
 
 public class Sphere implements Hittable {
 
