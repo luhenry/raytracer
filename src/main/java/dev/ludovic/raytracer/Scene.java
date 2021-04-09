@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import dev.ludovic.raytracer.hittables.HitRecord;
 import dev.ludovic.raytracer.hittables.HittableList;
+import dev.ludovic.raytracer.hittables.MovingSphere;
 import dev.ludovic.raytracer.hittables.Sphere;
 import dev.ludovic.raytracer.materials.Dielectric;
 import dev.ludovic.raytracer.materials.Lambertian;
@@ -43,7 +44,7 @@ public class Scene {
         final double dist_to_focus = 10.0;
         final double aperture = 0.1;
 
-        final Camera cam = new Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
+        final Camera cam = new Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
         // Render
         logger.log(Level.INFO, "Render");
@@ -112,26 +113,27 @@ public class Scene {
         for (int a = -11; a < 11; a++) {
             for (int b = -11; b < 11; b++) {
                 double choose_mat = rand.nextDouble();
-                Point3 center = new Point3(a + 0.9*rand.nextDouble(), 0.2, b + 0.9*rand.nextDouble());
+                Point3 center0 = new Point3(a + 0.9*rand.nextDouble(), 0.2, b + 0.9*rand.nextDouble());
 
-                if (center.sub(new Point3(4, 0.2, 0)).length() > 0.9) {
+                if (center0.sub(new Point3(4, 0.2, 0)).length() > 0.9) {
                     Material sphere_material;
 
                     if (choose_mat < 0.8) {
                         // diffuse
                         Color albedo = new Color(Vec3.random(rand).mul(Vec3.random(rand)));
                         sphere_material = new Lambertian(albedo);
-                        world.add(new Sphere(center, 0.2, sphere_material));
+                        Point3 center1 = new Point3(center0.add(new Vec3(0, 0.5*rand.nextDouble(), 0)));
+                        world.add(new MovingSphere(center0, center1, 0.0, 1.0, 0.2, sphere_material));
                     } else if (choose_mat < 0.95) {
                         // metal
                         Color albedo = new Color(Vec3.random(rand, 0.5, 1.0));
                         double fuzz = rand.nextDouble() * 0.5;
                         sphere_material = new Metal(albedo, fuzz);
-                        world.add(new Sphere(center, 0.2, sphere_material));
+                        world.add(new Sphere(center0, 0.2, sphere_material));
                     } else {
                         // glass
                         sphere_material = new Dielectric(1.5);
-                        world.add(new Sphere(center, 0.2, sphere_material));
+                        world.add(new Sphere(center0, 0.2, sphere_material));
                     }
                 }
             }

@@ -14,7 +14,7 @@ public class Lambertian implements Material {
         this.albedo = albedo;
     }
 
-    public boolean scatter(Ray r_in, HitRecord rec, Color[] attenuation, Ray[] scattered) {
+    public boolean scatter(Ray ray, HitRecord rec, Color[] attenuation, Ray[] scattered) {
         assert attenuation.length == 1;
         assert scattered.length == 1;
 
@@ -24,7 +24,7 @@ public class Lambertian implements Material {
         if (scatter_direction.nearZero())
             scatter_direction = rec.normal();
 
-        scattered[0] = new Ray(rec.point(), scatter_direction);
+        scattered[0] = new Ray(rec.point(), scatter_direction, ray.time());
         attenuation[0] = albedo;
         return true;
     }

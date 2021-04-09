@@ -16,10 +16,10 @@ public class Dielectric implements Material {
         this.ir = ir;
     }
 
-    public boolean scatter(Ray r_in, HitRecord rec, Color[] attenuation, Ray[] scattered) {
+    public boolean scatter(Ray ray, HitRecord rec, Color[] attenuation, Ray[] scattered) {
         double refraction_ratio = rec.front_face() ? (1.0/ir) : ir;
 
-        Vec3 unit_direction = r_in.direction().unit();
+        Vec3 unit_direction = ray.direction().unit();
         double cos_theta = Math.min(unit_direction.neg().dot(rec.normal()), 1.0);
         double sin_theta = Math.sqrt(1.0 - cos_theta * cos_theta);
 
@@ -31,7 +31,7 @@ public class Dielectric implements Material {
             direction = unit_direction.refract(rec.normal(), refraction_ratio);
 
         attenuation[0] = new Color(1.0, 1.0, 1.0);
-        scattered[0] = new Ray(rec.point(), direction);
+        scattered[0] = new Ray(rec.point(), direction, ray.time());
         return true;
     }
 

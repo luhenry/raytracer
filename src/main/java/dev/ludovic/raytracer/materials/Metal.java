@@ -16,12 +16,12 @@ public class Metal implements Material {
         this.fuzz = Math.min(fuzz, 1);
     }
 
-    public boolean scatter(Ray r_in, HitRecord rec, Color[] attenuation, Ray[] scattered) {
+    public boolean scatter(Ray ray, HitRecord rec, Color[] attenuation, Ray[] scattered) {
         assert attenuation.length == 1;
         assert scattered.length == 1;
 
-        Vec3 reflected = r_in.direction().unit().reflect(rec.normal());
-        scattered[0] = new Ray(rec.point(), reflected.add(Vec3.randomInUnitSphere().mul(fuzz)));
+        Vec3 reflected = ray.direction().unit().reflect(rec.normal());
+        scattered[0] = new Ray(rec.point(), reflected.add(Vec3.randomInUnitSphere().mul(fuzz)), ray.time());
         attenuation[0] = albedo;
         return scattered[0].direction().dot(rec.normal()) > 0;
     }
