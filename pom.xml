@@ -14,8 +14,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <javac.target>11</javac.target>
 
     <!-- JMH version to use with this project. -->
     <jmh.version>1.29</jmh.version>
