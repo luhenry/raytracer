@@ -32,21 +32,11 @@ public class Scene {
         this.world = world;
     }
 
-    public Color[] render(int image_width, int image_height) throws InterruptedException, ExecutionException {
-        // Image
-        double aspect_ratio = ((double)image_width) / image_height;
-        int samples_per_pixel = 500;
-        int max_depth = 50;
+    public Color[] render(int image_width, int image_height, Camera camera) throws InterruptedException, ExecutionException {
+        return render(image_width, image_height, camera, /*samples_per_pixel=*/100, /*max_depth=*/50);
+    }
 
-        Point3 lookfrom = new Point3(13, 2, 3);
-        Point3 lookat = new Point3(0, 0, 0);
-        Vec3 vup = new Vec3(0, 1, 0);
-        double dist_to_focus = 10.0;
-        double aperture = 0.1;
-
-        Camera cam = new Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
-
-        // Render
+    public Color[] render(int image_width, int image_height, Camera camera, int samples_per_pixel, int max_depth) throws InterruptedException, ExecutionException {
         logger.log(Level.INFO, "Render");
 
         Color[] image = new Color[image_width * image_height];
@@ -55,6 +45,7 @@ public class Scene {
 
         ForkJoinPool pool = new ForkJoinPool();
         ForkJoinTask[] tasks = new ForkJoinTask[image_height];
+
         for (int jo = image_height-1; jo >= 0; --jo) {
             final int j = jo;
             tasks[j] = pool.submit(new Callable() {
@@ -65,7 +56,7 @@ public class Scene {
                         for (int s = 0; s < samples_per_pixel; ++s) {
                             double u = ((double)i + ThreadLocalRandom.current().nextDouble()) / (image_width-1);
                             double v = ((double)j + ThreadLocalRandom.current().nextDouble()) / (image_height-1);
-                            pixel_color = pixel_color.add(ray_color(cam.ray(u, v), tree, max_depth));
+                            pixel_color = pixel_color.add(ray_color(camera.ray(u, v), tree, max_depth));
                         }
                         image[j * image_width + i] = new Color(pixel_color.div(samples_per_pixel).sqrt());
                     }
