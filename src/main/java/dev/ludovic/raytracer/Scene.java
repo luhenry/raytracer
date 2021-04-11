@@ -41,7 +41,7 @@ public class Scene {
 
         Color[] image = new Color[image_width * image_height];
 
-        BVHNode tree = new BVHNode(world, cam.shutter_open(), cam.shutter_close());
+        BVHNode tree = new BVHNode(world.clone(), camera.shutter_open(), camera.shutter_close());
 
         ForkJoinPool pool = new ForkJoinPool();
         ForkJoinTask[] tasks = new ForkJoinTask[image_height];

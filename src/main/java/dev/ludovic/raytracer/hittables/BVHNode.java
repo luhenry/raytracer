@@ -36,10 +36,9 @@ public class BVHNode implements Hittable {
             }
             break;
         default:
-            HittableList sorted_list = list.clone();
-            sorted_list.sort(comparator);
-            this.left = new BVHNode(sorted_list.subList(0, sorted_list.size() / 2), time0, time1);
-            this.right = new BVHNode(sorted_list.subList(sorted_list.size() / 2, sorted_list.size()), time0, time1);
+            list.sort(comparator);
+            this.left = new BVHNode(list.subList(0, list.size() / 2).clone(), time0, time1);
+            this.right = new BVHNode(list.subList(list.size() / 2, list.size()).clone(), time0, time1);
             break;
         }
 

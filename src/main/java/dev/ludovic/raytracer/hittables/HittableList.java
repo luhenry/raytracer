@@ -9,14 +9,14 @@ import dev.ludovic.raytracer.Ray;
 
 public final class HittableList implements Hittable {
 
-    private final ArrayList<Hittable> objects;
+    private final List<Hittable> objects;
 
     public HittableList() {
         this.objects = new ArrayList<Hittable>();
     }
 
     private HittableList(List<Hittable> objects) {
-        this.objects = new ArrayList<Hittable>(objects);
+        this.objects = objects;
     }
 
     public void add(Hittable object) {
