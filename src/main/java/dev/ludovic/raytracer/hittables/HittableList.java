@@ -2,21 +2,21 @@
 package dev.ludovic.raytracer.hittables;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 import dev.ludovic.raytracer.Ray;
 
 public final class HittableList implements Hittable {
 
-    private final List<Hittable> objects;
+    private final ArrayList<Hittable> objects;
 
     public HittableList() {
         this.objects = new ArrayList<Hittable>();
     }
 
-    private HittableList(List<Hittable> objects) {
-        this.objects = objects;
+    private HittableList(Collection<Hittable> objects) {
+        this.objects = new ArrayList<Hittable>(objects);
     }
 
     public void add(Hittable object) {
@@ -28,7 +28,7 @@ public final class HittableList implements Hittable {
     }
 
     public HittableList clone() {
-        return new HittableList((List<Hittable>)objects.clone());
+        return new HittableList(objects);
     }
 
     public Hittable get(int index) {
