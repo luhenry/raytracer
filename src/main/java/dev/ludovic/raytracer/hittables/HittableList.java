@@ -2,17 +2,21 @@
 package dev.ludovic.raytracer.hittables;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import dev.ludovic.raytracer.Ray;
 
 public final class HittableList implements Hittable {
 
-    private final ArrayList<Hittable> objects = new ArrayList<Hittable>();
+    private final ArrayList<Hittable> objects;
 
-    public HittableList() {}
+    public HittableList() {
+        this.objects = new ArrayList<Hittable>();
+    }
 
-    public HittableList(Hittable object) {
-        add(object);
+    private HittableList(List<Hittable> objects) {
+        this.objects = new ArrayList<Hittable>(objects);
     }
 
     public void add(Hittable object) {
@@ -21,6 +25,26 @@ public final class HittableList implements Hittable {
 
     public void clear() {
         objects.clear();
+    }
+
+    public HittableList clone() {
+        return new HittableList((List<Hittable>)objects.clone());
+    }
+
+    public Hittable get(int index) {
+        return objects.get(index);
+    }
+
+    public int size() {
+        return objects.size();
+    }
+
+    public void sort(Comparator<Hittable> c) {
+        objects.sort(c);
+    }
+
+    public HittableList subList(int fromIndex, int toIndex) {
+        return new HittableList(objects.subList(fromIndex, toIndex));
     }
 
     public boolean hit(Ray ray, double t_min, double t_max, HitRecord[] rec) {
@@ -39,5 +63,27 @@ public final class HittableList implements Hittable {
         }
 
         return hit_anything;
+    }
+
+    public boolean bounding_box(double time0, double time1, AABB[] output_box) {
+        assert output_box.length == 1;
+
+        if (objects.isEmpty()) {
+            return false;
+        }
+
+        boolean first_box = true;
+        AABB[] temp = new AABB[1];
+
+        for (Hittable object : objects) {
+            if (!object.bounding_box(time0, time1, temp)) {
+                return false;
+            }
+
+            output_box[0] = first_box ? temp[0] : AABB.surrounding_box(output_box[0], temp[0]);
+            first_box = false;
+        }
+
+        return true;
     }
 }

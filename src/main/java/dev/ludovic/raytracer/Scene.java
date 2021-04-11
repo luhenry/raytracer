@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import dev.ludovic.raytracer.hittables.BVHNode;
 import dev.ludovic.raytracer.hittables.HitRecord;
 import dev.ludovic.raytracer.hittables.HittableList;
 import dev.ludovic.raytracer.hittables.MovingSphere;
@@ -27,7 +28,7 @@ public class Scene {
 
     private final HittableList world;
 
-    public Scene(HittableList world) {
+    private Scene(HittableList world) {
         this.world = world;
     }
 
@@ -51,6 +52,8 @@ public class Scene {
 
         final Color[] image = new Color[image_width * image_height];
 
+        final BVHNode tree = new BVHNode(world, cam.shutter_open(), cam.shutter_close());
+
         final ForkJoinPool pool = new ForkJoinPool();
         final ForkJoinTask[] tasks = new ForkJoinTask[image_height];
         for (int jo = image_height-1; jo >= 0; --jo) {
@@ -63,7 +66,7 @@ public class Scene {
                         for (int s = 0; s < samples_per_pixel; ++s) {
                             double u = ((double)i + ThreadLocalRandom.current().nextDouble()) / (image_width-1);
                             double v = ((double)j + ThreadLocalRandom.current().nextDouble()) / (image_height-1);
-                            pixel_color = pixel_color.add(ray_color(cam.ray(u, v), world, max_depth));
+                            pixel_color = pixel_color.add(ray_color(cam.ray(u, v), tree, max_depth));
                         }
                         image[j * image_width + i] = new Color(pixel_color.div(samples_per_pixel).sqrt());
                     }
@@ -81,18 +84,18 @@ public class Scene {
         return image;
     }
 
-    private Color ray_color(Ray ray, HittableList world, int depth) {
+    private Color ray_color(Ray ray, BVHNode tree, int depth) {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0) {
             return new Color(0, 0, 0);
         }
 
         HitRecord[] rec = new HitRecord[1];
-        if (world.hit(ray, 0.001, Double.POSITIVE_INFINITY, rec)) {
+        if (tree.hit(ray, 0.001, Double.POSITIVE_INFINITY, rec)) {
             Color[] attenuation = new Color[1];
             Ray[] scattered = new Ray[1];
             if (rec[0].material().scatter(ray, rec[0], attenuation, scattered)) {
-                return new Color(attenuation[0].mul(ray_color(scattered[0], world, depth - 1)));
+                return new Color(attenuation[0].mul(ray_color(scattered[0], tree, depth - 1)));
             }
             return new Color(0, 0, 0);
         }

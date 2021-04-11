@@ -49,6 +49,15 @@ public class MovingSphere implements Hittable {
         return true;
     }
 
+    public boolean bounding_box(double time0, double time1, AABB[] output_box) {
+        assert output_box.length == 1;
+
+        AABB box0 = new AABB(new Point3(center(time0).sub(radius)), new Point3(center(time0).add(radius)));
+        AABB box1 = new AABB(new Point3(center(time1).sub(radius)), new Point3(center(time1).add(radius)));
+        output_box[0] = AABB.surrounding_box(box0, box1);
+        return true;
+    }
+
     public Point3 center(double time) {
         return new Point3(center1.sub(center0).mul((time - time0) / (time1 - time0)).add(center0));
     }
