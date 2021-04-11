@@ -13,7 +13,7 @@ public class Camera {
     private final double lens_radius;
     private final double shutter_open,  shutter_close; // shutter open/close times
 
-    public Camera(Point3 lookfrom, Point3 lookat, Vec3 vup, double vfov /* vertical field-of-view in degrees */, double aspect_ratio, double aperture, double focus_dist, double shutter_open, double  shutter_close) {
+    public Camera(Point3 lookfrom, Point3 lookat, Vec3 vup, double vfov /* vertical field-of-view in degrees */, double aspect_ratio, double aperture, double focus_dist, double shutter_open, double shutter_close) {
         double theta = Math.toRadians(vfov);
         double h = Math.tan(theta / 2);
         double viewport_height = 2.0 * h;
