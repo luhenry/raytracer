@@ -115,8 +115,14 @@ public class Scene {
                         // diffuse
                         Color albedo = new Color(Vec3.random(rand).mul(Vec3.random(rand)));
                         sphere_material = new Lambertian(albedo);
-                        Point3 center1 = new Point3(center0.add(new Vec3(0, 0.5*rand.nextDouble(), 0)));
-                        world.add(new MovingSphere(center0, center1, 0.0, 1.0, 0.2, sphere_material));
+                        if (rand.nextInt(4) == 0) {
+                            // moving sphere
+                            Point3 center1 = new Point3(center0.add(new Vec3(0, 0.5*rand.nextDouble(), 0)));
+                            world.add(new MovingSphere(center0, center1, 0.0, 1.0, 0.2, sphere_material));
+                        } else {
+                            // shpere
+                            world.add(new Sphere(center0, 0.2, sphere_material));
+                        }
                     } else if (choose_mat < 0.95) {
                         // metal
                         Color albedo = new Color(Vec3.random(rand, 0.5, 1.0));
