@@ -32,30 +32,29 @@ public class Scene {
         this.world = world;
     }
 
-    public Color[] render(final int image_width, final int image_height) throws InterruptedException, ExecutionException {
+    public Color[] render(int image_width, int image_height) throws InterruptedException, ExecutionException {
         // Image
-        final double aspect_ratio = ((double)image_width) / image_height;
-        final int samples_per_pixel = 500;
-        final int max_depth = 50;
+        double aspect_ratio = ((double)image_width) / image_height;
+        int samples_per_pixel = 500;
+        int max_depth = 50;
 
-        // Camera
-        final Point3 lookfrom = new Point3(13, 2, 3);
-        final Point3 lookat = new Point3(0, 0, 0);
-        final Vec3 vup = new Vec3(0, 1, 0);
-        final double dist_to_focus = 10.0;
-        final double aperture = 0.1;
+        Point3 lookfrom = new Point3(13, 2, 3);
+        Point3 lookat = new Point3(0, 0, 0);
+        Vec3 vup = new Vec3(0, 1, 0);
+        double dist_to_focus = 10.0;
+        double aperture = 0.1;
 
-        final Camera cam = new Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+        Camera cam = new Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
         // Render
         logger.log(Level.INFO, "Render");
 
-        final Color[] image = new Color[image_width * image_height];
+        Color[] image = new Color[image_width * image_height];
 
-        final BVHNode tree = new BVHNode(world, cam.shutter_open(), cam.shutter_close());
+        BVHNode tree = new BVHNode(world, cam.shutter_open(), cam.shutter_close());
 
-        final ForkJoinPool pool = new ForkJoinPool();
-        final ForkJoinTask[] tasks = new ForkJoinTask[image_height];
+        ForkJoinPool pool = new ForkJoinPool();
+        ForkJoinTask[] tasks = new ForkJoinTask[image_height];
         for (int jo = image_height-1; jo >= 0; --jo) {
             final int j = jo;
             tasks[j] = pool.submit(new Callable() {
