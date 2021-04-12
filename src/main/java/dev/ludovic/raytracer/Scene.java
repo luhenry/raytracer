@@ -64,9 +64,12 @@ public class Scene {
             });
         }
 
+        long duration = 0;
         for (int j = image_height - 1; j >= 0; --j) {
-            Long duration = (Long)tasks[j].get();
-            logger.log(Level.INFO, String.format("Remaining: %d (%dms)", j, duration));
+            duration += (Long)tasks[j].get();
+            if (j % (image_height / 10) == 0) {
+                logger.log(Level.INFO, String.format("Remaining: %d (~%dus/pixel)", j, duration * 1000 / image_width / (image_height - j)));
+            }
         }
 
         return image;
