@@ -8,6 +8,6 @@ public class Point3 extends Vec3 {
     }
 
     public Point3(Vec3 v) {
-        super(v.x(), v.y(), v.z());
+        super(v);
     }
 }

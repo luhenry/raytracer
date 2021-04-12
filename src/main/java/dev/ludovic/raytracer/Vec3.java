@@ -17,6 +17,12 @@ public class Vec3 {
         this.z = z;
     }
 
+    protected Vec3(Vec3 that) {
+        this.x = that.x;
+        this.y = that.y;
+        this.z = that.z;
+    }
+
     public double x() {
         return x;
     }

@@ -11,7 +11,7 @@ public class Color extends Vec3 {
     }
 
     public Color(Vec3 v) {
-        super(v.x(), v.y(), v.z());
+        super(v);
     }
 
     @Override
