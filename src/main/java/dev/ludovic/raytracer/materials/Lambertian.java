@@ -5,12 +5,18 @@ import dev.ludovic.raytracer.Color;
 import dev.ludovic.raytracer.Ray;
 import dev.ludovic.raytracer.Vec3;
 import dev.ludovic.raytracer.hittables.HitRecord;
+import dev.ludovic.raytracer.textures.SolidColor;
+import dev.ludovic.raytracer.textures.Texture;
 
 public class Lambertian implements Material {
 
-    private final Color albedo;
+    private final Texture albedo;
 
     public Lambertian(Color albedo) {
+        this.albedo = new SolidColor(albedo);
+    }
+
+    public Lambertian(Texture albedo) {
         this.albedo = albedo;
     }
 
@@ -25,7 +31,7 @@ public class Lambertian implements Material {
             scatter_direction = rec.normal();
 
         scattered[0] = new Ray(rec.point(), scatter_direction, ray.time());
-        attenuation[0] = albedo;
+        attenuation[0] = albedo.value(rec.u(), rec.v(), rec.point());
         return true;
     }
 }

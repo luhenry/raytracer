@@ -19,6 +19,8 @@ import dev.ludovic.raytracer.materials.Dielectric;
 import dev.ludovic.raytracer.materials.Lambertian;
 import dev.ludovic.raytracer.materials.Material;
 import dev.ludovic.raytracer.materials.Metal;
+import dev.ludovic.raytracer.textures.CheckerTexture;
+import dev.ludovic.raytracer.textures.Texture;
 
 public class Scene {
 
@@ -107,8 +109,8 @@ public class Scene {
 
         HittableList world = new HittableList();
 
-        Material ground_material = new Metal(new Color(0.7, 0.6, 0.5), 0.0);
-        world.add(new Sphere(new Point3(0,-1000,0), 1000, ground_material));
+        Texture checker = new CheckerTexture(new Color(0.2, 0.3, 0.1), new Color(0.9, 0.9, 0.9));
+        world.add(new Sphere(new Point3(0,-1000,0), 1000, new Lambertian(checker)));
 
         for (int a = -11; a < 11; a++) {
             for (int b = -11; b < 11; b++) {

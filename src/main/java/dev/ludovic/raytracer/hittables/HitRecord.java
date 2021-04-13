@@ -13,21 +13,26 @@ public class HitRecord {
     private final Material material;
     private final double t;
     private final boolean front_face;
+    private final double u, v;
 
-    public HitRecord(Point3 point, Vec3 normal, Material material, double t, boolean front_face) {
+    public HitRecord(Point3 point, Vec3 normal, Material material, double t, boolean front_face, double u, double v) {
         this.point = point;
         this.normal = normal;
         this.material = material;
         this.t = t;
         this.front_face = front_face;
+        this.u = u;
+        this.v = v;
     }
 
-    public HitRecord(Point3 point, Material material, double t, Ray ray, Vec3 outward_normal) {
+    public HitRecord(Point3 point, Material material, double t, Ray ray, Vec3 outward_normal, double u, double v) {
         this.point = point;
         this.material = material;
         this.t = t;
         this.front_face = ray.direction().dot(outward_normal) < 0;
         this.normal = this.front_face ? outward_normal : outward_normal.neg();
+        this.u = u;
+        this.v = v;
     }
 
     public Point3 point() {
@@ -48,5 +53,13 @@ public class HitRecord {
 
     public boolean front_face() {
         return front_face;
+    }
+
+    public double u() {
+        return u;
+    }
+
+    public double v() {
+        return v;
     }
 }
