@@ -30,12 +30,18 @@ public class Scene {
         this.world = world;
     }
 
+    public HittableList world() {
+        return world;
+    }
+
     public Color[] render(int image_width, int image_height, Camera camera) throws InterruptedException, ExecutionException {
         return render(image_width, image_height, camera, /*samples_per_pixel=*/100, /*max_depth=*/50);
     }
 
     public Color[] render(int image_width, int image_height, Camera camera, int samples_per_pixel, int max_depth) throws InterruptedException, ExecutionException {
-        logger.log(Level.INFO, "Render");
+        if (image_height > 10) {
+            logger.log(Level.INFO, "Render");
+        }
 
         Color[] image = new Color[image_width * image_height];
 
@@ -67,7 +73,7 @@ public class Scene {
         long duration = 0;
         for (int j = image_height - 1; j >= 0; --j) {
             duration += (Long)tasks[j].get();
-            if (j % (image_height / 10) == 0) {
+            if (image_height > 10 && j % (image_height / 10) == 0) {
                 logger.log(Level.INFO, String.format("Remaining: %d (~%dus/pixel)", j, duration * 1000 / image_width / (image_height - j)));
             }
         }
@@ -75,7 +81,7 @@ public class Scene {
         return image;
     }
 
-    private Color ray_color(Ray ray, BVHNode tree, int depth) {
+    public Color ray_color(Ray ray, BVHNode tree, int depth) {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0) {
             return new Color(0, 0, 0);
